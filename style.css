@@ -19,5 +19,12 @@ body {
 }
 
 .item {
-  border: solid black 1px;
+  border-top: solid rgb(100, 100, 100) 1px;
+  border-left: solid rgb(100, 100, 100) 1px;
+  user-select: none;
+  background-clip: padding-box;
+}
+
+.item.hide-grid {
+  border: none;
 }

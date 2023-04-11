@@ -1,14 +1,18 @@
 // Capture elements
-const button = document.querySelector("button");
 const container = document.querySelector(".container");
 const dimensionRangeInput = document.querySelector("#dimension-input");
 const colorPicker = document.querySelector("#color-picker");
+const brushButton = document.getElementById("brush-button");
+const bgColorButton = document.getElementById("bg-color");
+const eraseButton = document.getElementById("erase-button");
+const toggleGride = document.getElementById("toggle-grid");
+const cancelButton = document.getElementById("cancel-button");
 
 // Variables
-let items = [];
 let isMousePressed = false;
-let color = "rgb(0,0,0)";
+let colorComponent = [0, 0, 0];
 let opacity = 1;
+let activeMode = "brush";
 
 // Initialize the page
 generateGrid(32);
@@ -22,43 +26,81 @@ function generateGrid(e) {
   container.innerHTML = "";
   container.style.cssText = `grid-template-columns: repeat(${e},auto)`;
   for (let i = 0; i < e ** 2; i++) {
-    const item = document.createElement("span");
+    const item = document.createElement("div");
     item.classList.add("item");
+    item.addEventListener("mouseover", write);
+    item.addEventListener("mousedown", write);
     container.appendChild(item);
   }
-  items = [...container.children];
-  write();
+  activeMode = "brush";
 }
 
-// Select the color
-colorPicker.addEventListener("input", function (e) {
-  color = e.target.value;
-});
-
 // Verify if mouse button is pressed
-container.addEventListener("mousedown", function () {
+document.body.addEventListener("mousedown", function () {
   isMousePressed = true;
 });
 
-container.addEventListener("mouseup", function () {
+document.body.addEventListener("mouseup", function () {
   isMousePressed = false;
 });
 
-// Color item
-function write() {
-  items.forEach((item) => {
-    item.addEventListener("mouseover", function () {
-      if (isMousePressed) {
-        this.style.backgroundColor = color;
-      }
-    });
-  });
+// Select the color
+colorPicker.addEventListener("input", function (e) {
+  let color = e.target.value;
+  colorComponent = color.hexToRGB();
+  activeMode = "brush";
+});
 
-  items.forEach((item) => {
-    item.addEventListener("mousedown", function () {
-      this.style.backgroundColor = color;
-    });
-  });
+// Select mode
+eraseButton.onclick = () => (activeMode = "erase");
+brushButton.onclick = () => (activeMode = "brush");
+
+// Brush and erase
+function write(e) {
+  if (e.type === "mouseover" && !isMousePressed) return;
+  if (activeMode === "brush") {
+    e.target.style.backgroundColor = `rgba(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]},${opacity})`;
+  } else if (activeMode === "erase") {
+    e.target.style.backgroundColor = "transparent";
+  }
 }
 
-// Cancel color item
+// Color the background
+bgColorButton.onclick = () =>
+  (container.style.backgroundColor = `rgb(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]}`);
+
+// Show/hide grid
+toggleGride.onclick = () => {
+  let itemsList = Array.from(container.childNodes);
+  itemsList.forEach((item) => item.classList.toggle("hide-grid"));
+  if (toggleGride.textContent === "Hide grid") {
+    toggleGride.textContent = "Show grid";
+  } else {
+    toggleGride.textContent = "Hide grid";
+  }
+};
+
+// Reset
+cancelButton.onclick = () => {
+  let itemsList = Array.from(container.childNodes);
+  itemsList.forEach((item) => (item.style.backgroundColor = "transparent"));
+  activeMode = "brush";
+  container.style.backgroundColor = "white";
+};
+
+// Other functions
+String.prototype.hexToRGB = function () {
+  var aRgbHex = this.slice(1).match(/.{1,2}/g);
+  var colorComponent = [
+    parseInt(aRgbHex[0], 16),
+    parseInt(aRgbHex[1], 16),
+    parseInt(aRgbHex[2], 16),
+  ];
+  return colorComponent;
+};
+
+// Da fare:
+// - selettore opacità
+// - colore casuale
+// - modalità arcobaleno
+// - Estetica
