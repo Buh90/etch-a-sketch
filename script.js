@@ -1,25 +1,30 @@
 // Capture elements
-const container = document.querySelector(".container");
-const dimensionRangeInput = document.querySelector("#dimension-input");
-const colorPicker = document.querySelector("#color-picker");
+const brushColorPicker = document.querySelector("#brush-color");
 const brushButton = document.getElementById("brush-button");
-const bgColorButton = document.getElementById("bg-color");
 const eraseButton = document.getElementById("erase-button");
+//const lightenButton = document.getElementById("lighten-button");
+//const darkenButton = document.getElementById("darken-button");
+const canvasColorPicker = document.getElementById("canvas-color");
+const gridColorPicker = document.getElementById("grid-color");
 const toggleGride = document.getElementById("toggle-grid");
-const cancelButton = document.getElementById("cancel-button");
+const dimensionRangeInput = document.querySelector("#dimension-input");
+const resolutionLabel = document.getElementById("resolution-label");
+const resetButton = document.getElementById("reset-button");
+const container = document.getElementById("grid-container");
 
 // Variables
 let isMousePressed = false;
 let colorComponent = [0, 0, 0];
-let opacity = 1;
 let activeMode = "brush";
 
 // Initialize the page
 generateGrid(32);
 
 // Generate the grid
-dimensionRangeInput.addEventListener("input", function (e) {
-  generateGrid(e.target.valueAsNumber);
+dimensionRangeInput.addEventListener("change", function (e) {
+  let resolution = e.target.valueAsNumber;
+  generateGrid(resolution);
+  resolutionLabel.textContent = `${resolution} x ${resolution}`;
 });
 
 function generateGrid(e) {
@@ -45,7 +50,7 @@ document.body.addEventListener("mouseup", function () {
 });
 
 // Select the color
-colorPicker.addEventListener("input", function (e) {
+brushColorPicker.addEventListener("input", function (e) {
   let color = e.target.value;
   colorComponent = color.hexToRGB();
   activeMode = "brush";
@@ -59,17 +64,24 @@ brushButton.onclick = () => (activeMode = "brush");
 function write(e) {
   if (e.type === "mouseover" && !isMousePressed) return;
   if (activeMode === "brush") {
-    e.target.style.backgroundColor = `rgba(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]},${opacity})`;
+    e.target.style.background = `rgb(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]})`;
   } else if (activeMode === "erase") {
     e.target.style.backgroundColor = "transparent";
   }
 }
 
-// Color the background
-bgColorButton.onclick = () =>
-  (container.style.backgroundColor = `rgb(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]}`);
+// Grid and background settings
+canvasColorPicker.addEventListener("input", function (e) {
+  let color = e.target.value;
+  container.style.backgroundColor = color;
+});
 
-// Show/hide grid
+gridColorPicker.addEventListener("input", function (e) {
+  let color = e.target.value;
+  let itemsList = Array.from(container.childNodes);
+  itemsList.forEach((item) => (item.style.borderColor = color));
+});
+
 toggleGride.onclick = () => {
   let itemsList = Array.from(container.childNodes);
   itemsList.forEach((item) => item.classList.toggle("hide-grid"));
@@ -81,11 +93,16 @@ toggleGride.onclick = () => {
 };
 
 // Reset
-cancelButton.onclick = () => {
+resetButton.onclick = () => {
   let itemsList = Array.from(container.childNodes);
-  itemsList.forEach((item) => (item.style.backgroundColor = "transparent"));
+  itemsList.forEach((item) => {
+    item.style.backgroundColor = "transparent";
+    item.style.opacity = 1;
+    item.style.borderColor = "#999";
+  });
   activeMode = "brush";
   container.style.backgroundColor = "white";
+  resolutionLabel.textContent = "32 x 32";
 };
 
 // Other functions
@@ -100,7 +117,11 @@ String.prototype.hexToRGB = function () {
 };
 
 // Da fare:
-// - selettore opacità
+// - chiaro/scuro
 // - colore casuale
 // - modalità arcobaleno
-// - Estetica
+// - Estetica range selettore
+// - Stampa
+// - Salva
+
+// Dean Wagner per spunto
