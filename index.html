@@ -1,101 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sketch your canvas</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <h1>Sketch your canvas</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sketch your canvas</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
 
-    <div class="container">
-      <div class="setting">
-        <div class="brush-setting">
-          <div class="picker-container">
-            <label for="brush-color">Brush color</label>
-            <input id="brush-color" class="color-picker" type="color" />
-          </div>
+<body>
+  <h1>Sketch your canvas</h1>
 
-          <button id="brush-button" class="active">Brush</button>
-          <div class="range-container">
-            Brush opacity
-            <input
-              id="opacity-input"
-              class="slider"
-              type="range"
-              min="1"
-              max="100"
-              value="100"
-            />
-          </div>
-          <button id="wet-brush-button">Wet brush</button>
-          <div class="range-container">
-            Brush moisture
-            <input
-              id="moisture-input"
-              class="slider"
-              type="range"
-              min="1"
-              max="100"
-              value="100"
-            />
-          </div>
-
-          <button id="rainbow-button">Rainbow mode</button>
-          <button id="erase-button">Erase</button>
+  <div class="container">
+    <div class="setting">
+      <div class="brush-setting">
+        <div class="picker-container">
+          <label for="brush-color">Brush color</label>
+          <input id="brush-color" class="color-picker" type="color" />
         </div>
 
-        <div class="canvas-setting">
-          <div class="picker-container">
-            <label for="canvas-color">Canvas color</label>
-            <input
-              id="canvas-color"
-              class="color-picker"
-              type="color"
-              value="#ffffff"
-            />
-          </div>
-          <div class="picker-container">
-            <label for="grid-color">Grid color</label>
-            <input
-              id="grid-color"
-              class="color-picker"
-              type="color"
-              value="#999999"
-            />
-          </div>
-          <button id="toggle-grid">Hide grid</button>
+        <button id="brush-button" class="active">Dry brush</button>
+        <div class="range-container">
+          Brush opacity
+          <input id="opacity-input" class="slider" type="range" min="1" max="100" value="100" />
+        </div>
+        <button id="wet-brush-button">Wet brush</button>
+        <div class="range-container">
+          Brush moisture
+          <input id="moisture-input" class="slider" type="range" min="1" max="100" value="100" />
         </div>
 
-        <input
-          id="dimension-input"
-          class="slider"
-          type="range"
-          min="2"
-          max="64"
-          value="32"
-        />
-        <label id="resolution-label" for="dimension-input"
-          >Grid size: 32 x 32</label
-        >
-
-        <div class="export-commands">
-          <button id="save-button">Save</button>
-          <button id="print-button">Print</button>
-          <button id="reset-button">Reset</button>
-        </div>
+        <button id="rainbow-button">Rainbow mode</button>
+        <button id="erase-button">Erase</button>
       </div>
 
-      <div id="grid-container"></div>
+      <div class="canvas-setting">
+        <div class="picker-container">
+          <label for="canvas-color">Canvas color</label>
+          <input id="canvas-color" class="color-picker" type="color" value="#ffffff" />
+        </div>
+        <div class="picker-container">
+          <label for="grid-color">Grid color</label>
+          <input id="grid-color" class="color-picker" type="color" value="#999999" />
+        </div>
+        <button id="toggle-grid">Hide grid</button>
+      </div>
+
+      <input id="dimension-input" class="slider" type="range" min="2" max="64" value="32" />
+      <label id="resolution-label" for="dimension-input">Grid size: 32 x 32</label>
+
+      <div class="export-commands">
+        <button id="download-button" download="image.jpg">Download</button>
+        <button id="print-button">Print</button>
+        <button id="reset-button">Reset</button>
+      </div>
     </div>
-    <script src="script.js"></script>
-  </body>
+
+    <div id="grid-container"></div>
+  </div>
+
+  <footer>Designed by Buh90 - 2023</footer>
+
+  <script src="script.js"></script>
+</body>
+
 </html>

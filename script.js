@@ -13,13 +13,15 @@ const toggleGride = document.getElementById("toggle-grid");
 const dimensionRangeInput = document.querySelector("#dimension-input");
 const resolutionLabel = document.getElementById("resolution-label");
 const resetButton = document.getElementById("reset-button");
+const downloadButton = document.getElementById("download-button");
+const printButton = document.getElementById("print-button");
 const container = document.getElementById("grid-container");
 
 // Variables
 let isMousePressed = false;
 let activeMode = "brush";
 let colorComponent = [0, 0, 0, brushOpacityInput.valueAsNumber / 100];
-let aaa = 1;
+let moistureDefaultValue = 1;
 
 // Initialize the page
 generateGrid(32);
@@ -108,16 +110,25 @@ function write(e) {
   } else if (activeMode === "wetbrush") {
     if (
       e.target.style.backgroundColor === "" ||
-      extractColorValue(e.target.style.backgroundColor)[3] === 0
+      extractColorValue(e.target.style.backgroundColor)[3] <
+        moistureDefaultValue
     ) {
       let opacityDecrement = calcMoisture();
 
       e.target.style.backgroundColor = `rgba(${colorComponent[0]},${colorComponent[1]},${colorComponent[2]},
-            ${aaa}`;
+            ${moistureDefaultValue}`;
 
-      aaa -= 0.1;
-      document.body.addEventListener("mouseup", () => (aaa = 1));
+      moistureDefaultValue -= opacityDecrement;
+      document.body.addEventListener(
+        "mouseup",
+        () => (moistureDefaultValue = 1)
+      );
     }
+  } else if (activeMode === "rainbow") {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+    e.target.style.backgroundColor = `rgb(${r},${g},${b})`;
   } else if (activeMode === "erase") {
     e.target.style.backgroundColor = "transparent";
   }
@@ -146,10 +157,12 @@ toggleGride.onclick = () => {
 };
 
 // Reset
-resetButton.onclick = reset;
+resetButton.addEventListener("click", function () {
+  reset();
+  generateGrid(32);
+});
 
 function reset() {
-  generateGrid(32);
   removeActiveClass();
   activeMode = "brush";
   brushButton.classList.add("active");
@@ -163,6 +176,29 @@ function reset() {
   brushOpacityInput.value = 100;
   brushMoistureInput.value = 100;
 }
+
+// Save and print
+downloadButton.addEventListener("click", () => {
+  html2canvas(container).then((canvas) => {
+    let image = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    let file = document.createElement("a");
+    file.href = image;
+    file.download = "image.png";
+    file.click();
+  });
+});
+
+printButton.addEventListener("click", () => {
+  html2canvas(container).then((canvas) => {
+    let newWindow = window.open("");
+    newWindow.document.body.appendChild(canvas);
+    newWindow.focus();
+    newWindow.print();
+    //location.reload();
+  });
+});
 
 // Other functions
 String.prototype.hexToRGB = function () {
@@ -200,9 +236,8 @@ function calcMoisture() {
   let moisture = brushMoistureInput.valueAsNumber;
   let opacityDecrement;
   if (moisture !== 100) {
-    opacityDecrement = 0.8;
-  } else opacityDecrement = 0;
-  //console.log(opacityDecrement);
+    opacityDecrement = 1 / moisture;
+  } else opacityDecrement = 0.005;
   return opacityDecrement;
 }
 
@@ -220,12 +255,3 @@ function extractColorValue(color) {
   }
   return rgb;
 }
-
-// Da fare:
-// - calcolo decremento opacità
-// - modalità arcobaleno
-// - Icona pennello/gomma
-// - Stampa
-// - Salva
-
-// Dean Wagner per spunto
